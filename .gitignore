@@ -1,0 +1,32 @@
+# --- Credentials & secrets ---
+.env
+*.env
+credentials.json
+token.json
+backend/.env
+backend/credentials.json
+backend/token.json
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# --- Node / frontend ---
+node_modules/
+frontend/node_modules/
+dist/
+build/
+
+# --- Editor/OS junk ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+npm-debug.log*

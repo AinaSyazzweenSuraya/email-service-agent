@@ -1,0 +1,291 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 32px 20px;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.masthead__mark {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.status-pill {
+  font-size: 13px;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+.status-pill--ok {
+  color: var(--slate);
+  border-color: var(--slate);
+  background: var(--slate-soft);
+}
+
+/* ---------- Stage ---------- */
+
+.stage {
+  flex: 1;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+
+/* ---------- Notice / setup states ---------- */
+
+.notice {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.notice p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.notice code {
+  background: var(--slate-soft);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.notice--error {
+  border-color: var(--flag);
+  background: var(--flag-soft);
+}
+
+.notice--error p {
+  color: #9c3418;
+}
+
+/* ---------- The ask form ---------- */
+
+.ask {
+  margin-bottom: 8px;
+}
+
+.ask__label {
+  display: block;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 16px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.ask__input {
+  width: 100%;
+  resize: none;
+  border: none;
+  border-bottom: 2px solid var(--line);
+  background: transparent;
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink);
+  padding: 4px 0 14px;
+  transition: border-color 0.15s ease;
+}
+
+.ask__input::placeholder {
+  color: #B8B6B0;
+}
+
+.ask__input:focus {
+  outline: none;
+  border-bottom-color: var(--slate);
+}
+
+.ask__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.example-chip {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.example-chip:hover {
+  border-color: var(--slate);
+  color: var(--slate);
+}
+
+.btn-primary {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  background: var(--ink);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--slate);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn-secondary {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--slate);
+  background: white;
+  border: 1px solid var(--slate);
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--slate-soft);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- Thinking state ---------- */
+
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin-top: 36px;
+}
+
+.thinking__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--slate);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- Digest output ---------- */
+
+.digest {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.digest__trace {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.trace-chip {
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 11px;
+  color: var(--slate);
+  background: var(--slate-soft);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.digest__body {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink);
+  max-width: 62ch;
+}
+
+.digest__body p {
+  margin: 0 0 14px;
+}
+
+.digest__body strong {
+  color: var(--ink);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 560px) {
+  .masthead, .stage {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .ask__label {
+    font-size: 24px;
+  }
+
+  .ask__input {
+    font-size: 19px;
+  }
+
+  .ask__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+}
