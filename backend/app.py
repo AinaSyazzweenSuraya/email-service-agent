@@ -24,11 +24,11 @@ from gmail_auth import get_gmail_credentials, TOKEN_PATH, CREDENTIALS_PATH
 
 app = FastAPI(title="Email Agent API")
 
-# Allow the local React dev server (Vite default port) to call this API.
-# When you deploy, replace "*" with your actual frontend's domain.
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[FRONTEND_URL, "http://localhost:5173", "http://127.0.0.1:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
