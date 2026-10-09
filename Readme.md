@@ -17,19 +17,19 @@ HTTP instead of run from a terminal.
 ```
 email-agent-web/
 ├── backend/
-│   ├── app.py            <- FastAPI server (new)
-│   ├── agent.py           <- the agent loop (from the CLI project)
-│   ├── gmail_auth.py       <- OAuth handling (from the CLI project)
-│   ├── gmail_client.py     <- Gmail fetching (from the CLI project)
+│   ├── app.py            
+│   ├── agent.py           
+│   ├── gmail_auth.py       
+│   ├── gmail_client.py     
 │   ├── requirements.txt
 │   ├── .env.example
-│   ├── credentials.json    <- you add this (OAuth client, see below)
-│   └── .env                <- you add this (Gemini API key)
+│   ├── credentials.json    
+│   └── .env               
 └── frontend/
     ├── src/
-    │   ├── App.jsx          <- main UI
+    │   ├── App.jsx          
     │   ├── App.css
-    │   ├── api.js            <- talks to the backend
+    │   ├── api.js            
     │   ├── main.jsx
     │   └── index.css
     ├── index.html

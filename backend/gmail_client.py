@@ -5,6 +5,7 @@ Fetches and parses emails from Gmail.
 import base64
 from bs4 import BeautifulSoup
 from googleapiclient.discovery import build
+from concurrent.futures import ThreadPoolExecutor
 
 from gmail_auth import get_gmail_credentials
 
@@ -113,13 +114,14 @@ def fetch_message_details(service, message_id):
 
 
 def fetch_recent_emails(max_results=10, query="in:inbox"):
-    """High-level convenience function: returns a list of parsed email dicts."""
-    service = get_gmail_service()
+    creds = get_gmail_credentials()
+    service = build("gmail", "v1", credentials=creds)
     stubs = list_recent_messages(service, max_results=max_results, query=query)
 
-    emails = []
-    for stub in stubs:
-        details = fetch_message_details(service, stub["id"])
-        emails.append(details)
+    def fetch_one(stub):
+        # Each thread builds its own service object, since they aren't thread-safe
+        thread_service = build("gmail", "v1", credentials=creds)
+        return fetch_message_details(thread_service, stub["id"])
 
-    return emails
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        return list(pool.map(fetch_one, stubs))

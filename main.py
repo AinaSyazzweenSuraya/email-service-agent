@@ -11,6 +11,7 @@ Usage:
 import argparse
 
 from gmail_auth import get_gmail_credentials
+from backend.gmail_client import fetch_recent_emails
 from summarizer import summarize_email, summarize_digest
 
 
