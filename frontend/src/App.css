@@ -116,3 +116,7 @@ h2 { margin: 0; font-size: 20px; line-height: 1.4; font-weight: 600; letter-spac
   .panel { padding: 20px; }
   .footer { width: calc(100% - 32px); }
 }
+
+.footer__links { display: flex; flex-wrap: wrap; gap: 18px; }
+.footer__links a { color: #36577f; text-underline-offset: 3px; }
+.footer__links a:hover { color: #235cb7; }

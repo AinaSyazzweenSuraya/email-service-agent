@@ -140,7 +140,7 @@ export default function App() {
               <div className="permission-info"><Icon name="shield" width="19" height="19" /><div><strong>Read-only access</strong><p>The app can read emails. It cannot send or delete them. You can disconnect at any time.</p></div></div>
               <label className="consent"><input type="checkbox" checked={connectConsent} onChange={e => setConnectConsent(e.target.checked)} /><span>Allow this app to read my Gmail emails.</span></label>
               <button className="btn-primary connect-button" onClick={handleAuthorize} disabled={authorizing || !connectConsent}>{authorizing ? 'Opening Google…' : 'Connect Gmail'}<Icon name="arrow" width="17" height="17" /></button>
-              <p className="connection__note">Google will ask you to approve access before connecting.</p>
+              <p className="connection__note">Google will ask you to approve access before connecting. Read our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms of Service</a>.</p>
             </div>
           )}
           {status?.authorized && !status.ai_configured && <div className="notice"><p>Email summaries are not set up yet. Please contact the app owner.</p></div>}
@@ -161,7 +161,7 @@ export default function App() {
         </section>
         {!status?.authorized && <section className="how-it-works" aria-labelledby="how-title"><h2 id="how-title">How it works</h2><ol><li><span>1</span><div><h3>Connect Gmail</h3><p>Sign in with Google and approve access.</p></div></li><li><span>2</span><div><h3>Ask a question</h3><p>Choose what you want to read or find.</p></div></li><li><span>3</span><div><h3>Read your summary</h3><p>Get an answer based on your emails.</p></div></li></ol></section>}
       </main>
-      <footer className="footer">Email Assistant<span>Read-only access. Disconnect anytime.</span></footer>
+      <footer className="footer"><span>Email Assistant</span><nav className="footer__links" aria-label="Legal"><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a></nav></footer>
     </div>
   )
 }
