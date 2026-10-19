@@ -36,15 +36,6 @@ load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")
 MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
-if not API_KEY:
-    raise EnvironmentError(
-        "GEMINI_API_KEY not set. Copy .env.example to .env and add your key.\n"
-        "Get a free key at: https://aistudio.google.com/apikey"
-    )
-
-client = genai.Client(api_key=API_KEY)
-
-
 # ---------------------------------------------------------------------------
 # TOOL DEFINITION
 # The Interactions API takes tool schemas as plain dicts (JSON Schema),
@@ -82,9 +73,9 @@ SEARCH_EMAILS_TOOL = {
 }
 
 
-def execute_search_emails(query: str, max_results: int = 10) -> str:
+def execute_search_emails(query: str, max_results: int = 10, credentials=None) -> str:
     """The real Python function that runs when the model calls search_emails."""
-    emails = fetch_recent_emails(max_results=max_results, query=query)
+    emails = fetch_recent_emails(max_results=min(max_results, 20), query=query, credentials=credentials)
 
     if not emails:
         return f"No emails found matching query: '{query}'"
@@ -124,7 +115,7 @@ being read on a phone, not studied like a report."""
 MAX_TOOL_CALL_ROUNDS = 5  # safety cap so a confused model can't loop forever
 
 
-def run_agent(user_goal: str, verbose: bool = True, on_tool_call=None) -> str:
+def run_agent(user_goal: str, verbose: bool = True, on_tool_call=None, credentials=None) -> str:
     """
     Runs the agent loop using the Interactions API:
       1. Send the goal + tool definition, in "stateful" mode (store=True, the
@@ -136,6 +127,9 @@ def run_agent(user_goal: str, verbose: bool = True, on_tool_call=None) -> str:
       3. Repeat until the model responds with plain text instead of a function
          call, or we hit the safety cap.
     """
+    if not API_KEY:
+        raise RuntimeError("The service owner must configure GEMINI_API_KEY.")
+    client = genai.Client(api_key=API_KEY)
     interaction = client.interactions.create(
         model=MODEL_NAME,
         input=user_goal,
@@ -168,7 +162,7 @@ def run_agent(user_goal: str, verbose: bool = True, on_tool_call=None) -> str:
                 result_text = f"Error: unknown tool '{call.name}'"
             else:
                 try:
-                    result_text = tool_fn(**call.arguments)
+                    result_text = tool_fn(**call.arguments, credentials=credentials)
                 except Exception as e:
                     result_text = f"Error running {call.name}: {e}"
 

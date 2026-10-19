@@ -26,12 +26,12 @@ def _write_from_env(env_name: str, path: str):
             f.write(value)
 
 
-_write_from_env("GOOGLE_CREDENTIALS_JSON", CREDENTIALS_PATH)
-_write_from_env("GOOGLE_TOKEN_JSON", TOKEN_PATH)
 
 
 def get_gmail_credentials():
     """Returns valid Gmail API credentials, running the OAuth flow if needed."""
+    _write_from_env("GOOGLE_CREDENTIALS_JSON", CREDENTIALS_PATH)
+    _write_from_env("GOOGLE_TOKEN_JSON", TOKEN_PATH)
     creds = None
 
     if os.path.exists(TOKEN_PATH):

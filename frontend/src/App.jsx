@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { getStatus, authorize, runAgent } from './api.js'
+import { getStatus, authorize, disconnect, runAgent } from './api.js'
 import './App.css'
 
 const EXAMPLE_GOALS = [
@@ -28,11 +28,16 @@ export default function App() {
   const [result, setResult] = useState('')
   const [error, setError] = useState('')
   const [authorizing, setAuthorizing] = useState(false)
+  const [connectConsent, setConnectConsent] = useState(false)
+  const [readConsent, setReadConsent] = useState(false)
 
   const textareaRef = useAutoResize(goal)
 
   useEffect(() => {
     refreshStatus()
+    const connection = new URLSearchParams(window.location.search).get('connection')
+    if (connection === 'cancelled') setError('Gmail connection cancelled. No new permission was granted.')
+    if (connection) window.history.replaceState({}, '', window.location.pathname)
   }, [])
 
   async function refreshStatus() {
@@ -40,7 +45,8 @@ export default function App() {
       const s = await getStatus()
       setStatus(s)
     } catch (e) {
-      setStatus({ credentials_file_present: false, authorized: false, offline: true })
+      setStatus({ oauth_configured: false, authorized: false, offline: true })
+      setError(e.message)
     }
   }
 
@@ -48,8 +54,9 @@ export default function App() {
     setAuthorizing(true)
     setError('')
     try {
-      await authorize()
-      await refreshStatus()
+      if (!connectConsent) return
+      const { authorization_url } = await authorize()
+      window.location.assign(authorization_url)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -57,9 +64,26 @@ export default function App() {
     }
   }
 
+  async function handleDisconnect() {
+    setAuthorizing(true)
+    setError('')
+    try {
+      const response = await disconnect()
+      setResult('')
+      setToolCalls([])
+      setGoal('')
+      setPhase('idle')
+      setReadConsent(false)
+      setConnectConsent(false)
+      await refreshStatus()
+      if (!response.revoked) setError('Disconnected from this app. To ensure Google access is revoked, remove this app in your Google Account connections.')
+    } catch (e) { setError(e.message) }
+    finally { setAuthorizing(false) }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!goal.trim() || phase === 'thinking') return
+    if (!goal.trim() || phase === 'thinking' || !readConsent || !status?.authorized || authorizing) return
 
     setPhase('thinking')
     setError('')
@@ -71,14 +95,15 @@ export default function App() {
       setToolCalls(res.tool_calls || [])
       setResult(res.result)
       setPhase('done')
+      setReadConsent(false)
     } catch (e) {
       setError(e.message)
       setPhase('error')
     }
   }
 
-  const needsSetup = status && (!status.credentials_file_present || status.offline)
-  const needsAuth = status && status.credentials_file_present && !status.authorized
+  const needsSetup = status && (!status.oauth_configured || status.offline)
+  const needsAuth = status && status.oauth_configured && !status.authorized
 
   return (
     <div className="page">
@@ -95,23 +120,25 @@ export default function App() {
         {needsSetup && (
           <div className="notice">
             <p>
-              The backend server isn't reachable, or <code>credentials.json</code> is
-              missing. Start the FastAPI server and make sure your Gmail OAuth file is
-              in place, then reload this page.
+              {status.offline ? 'The service is temporarily unavailable. Please try again later.' : 'Gmail connection is not available yet. The service owner needs to finish Google sign-in setup.'}
             </p>
           </div>
         )}
 
         {needsAuth && !needsSetup && (
           <div className="notice">
-            <p>Connect your Gmail account to let the agent read your inbox.</p>
-            <button className="btn-secondary" onClick={handleAuthorize} disabled={authorizing}>
+            <p>Connect your own Gmail account. Google will ask you to choose an account and approve read-only access. You can cancel or disconnect at any time. Never enter your email password or API keys here.</p>
+            <label><input type="checkbox" checked={connectConsent} onChange={e => setConnectConsent(e.target.checked)} /> I agree to connect Gmail with read-only access.</label>
+            <button className="btn-secondary" onClick={handleAuthorize} disabled={authorizing || !connectConsent}>
               {authorizing ? 'Opening Google sign-in…' : 'Connect Gmail'}
             </button>
           </div>
         )}
 
-        {!needsSetup && !needsAuth && (
+        {error && phase !== 'error' && <div className="notice notice--error" role="alert"><p>{error}</p></div>}
+        {status?.authorized && <button className="btn-secondary" onClick={handleDisconnect} disabled={authorizing || phase === 'thinking'}>Disconnect Gmail</button>}
+        {status?.authorized && !status.ai_configured && <div className="notice"><p>The AI service is not available yet. The service owner needs to finish setup.</p></div>}
+        {status?.authorized && !needsSetup && (
           <>
             <form className="ask" onSubmit={handleSubmit}>
               <label className="ask__label" htmlFor="goal">
@@ -132,6 +159,7 @@ export default function App() {
                 }}
                 rows={1}
               />
+              <label><input type="checkbox" checked={readConsent} onChange={e => setReadConsent(e.target.checked)} /> For this request, allow the agent to read matching emails and send their sender, subject, date and body excerpts to Google Gemini to prepare my answer. Google processes and may retain this information under its API terms.</label>
               <div className="ask__row">
                 <div className="examples">
                   {EXAMPLE_GOALS.map((ex) => (
@@ -145,7 +173,7 @@ export default function App() {
                     </button>
                   ))}
                 </div>
-                <button className="btn-primary" type="submit" disabled={phase === 'thinking'}>
+                <button className="btn-primary" type="submit" disabled={phase === 'thinking' || !readConsent || !status.ai_configured || authorizing}>
                   {phase === 'thinking' ? 'Reading…' : 'Ask'}
                 </button>
               </div>

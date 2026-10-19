@@ -1,28 +1,20 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8082'
+// Always use the frontend's /api proxy: cookies stay first-party on Vercel.
+const API_BASE = ''
 
-async function handle(response) {
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}))
-    throw new Error(body.detail || `Request failed (${response.status})`)
-  }
-  return response.json()
-}
-
-export async function getStatus() {
-  const res = await fetch(`${API_BASE}/api/status`)
-  return handle(res)
-}
-
-export async function authorize() {
-  const res = await fetch(`${API_BASE}/api/authorize`, { method: 'POST' })
-  return handle(res)
-}
-
-export async function runAgent(goal) {
-  const res = await fetch(`${API_BASE}/api/run`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ goal }),
+async function request(path, body) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    credentials: 'include',
+    ...(body === undefined ? {} : {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
   })
-  return handle(res)
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) throw new Error(typeof data.detail === 'string' ? data.detail : 'Request failed. Please try again.')
+  return data
 }
+
+export const getStatus = () => request('/api/status')
+export const authorize = () => request('/api/authorize', { consent: true })
+export const disconnect = () => request('/api/disconnect', {})
+export const runAgent = goal => request('/api/run', { goal, consent: true })
