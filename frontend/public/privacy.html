@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="How Email Assistant accesses Gmail, shares email details with Google Gemini, and stores connection information." />
+  <title>Privacy Policy · Email Assistant</title>
+  <link rel="stylesheet" href="/legal.css" />
+</head>
+<body>
+  <header><nav aria-label="Main navigation"><a class="brand" href="/">Email Assistant</a><a href="/">Back to app</a></nav></header>
+  <main>
+    <p class="review-note">Draft for review. Public Gmail processing setup is not finished.</p>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: 19 October 2026</p>
+    <p>This policy explains how Email Assistant handles information when you connect Gmail and ask questions about your emails.</p>
+    <h2>What the app accesses</h2>
+    <p>You choose whether to connect Gmail through Google's sign-in page. The app requests read-only Gmail access. This permission lets the app search and read your emails; it does not let the app send, change or delete them.</p>
+    <p>To answer your question, the app may read message identifiers, senders, subjects, dates, email text and snippets from matching messages. The model can choose more than one search based on your question.</p>
+    <h2>What is sent to Google Gemini</h2>
+    <p>Before each request, you must approve sharing matching email details with Google Gemini. The app sends your question and selected sender, subject, date and text excerpts so Gemini can write an answer.</p>
+    <p>The operator currently uses Gemini’s free tier. Under Google’s unpaid-service terms, submitted content and responses may be used to improve Google products and may be reviewed by humans. Google says not to submit sensitive, confidential or personal information to unpaid services. Public Gmail use is on hold until paid-service processing is configured and this policy is finalized.</p>
+    <p>The app uses Gemini's stateful Interactions API. Google may retain the question, email excerpts and responses under the applicable <a href="https://ai.google.dev/gemini-api/terms">Gemini API terms</a> and the operator's Google service configuration. Disconnecting the app does not automatically delete information already processed by Google.</p>
+    <h2>What the app stores</h2>
+    <p>The app's session database stores a session identifier, expiry times, encrypted Google access and refresh tokens, and temporary sign-in information. Tokens allow the app to use the Gmail access you approved without asking you to sign in for each question.</p>
+    <p>The app does not save email bodies, questions or summaries as records in its own session database. They pass through the backend and Google Gemini to answer your request. The answer is displayed in your browser.</p>
+    <p>Vercel hosts the website and backend. Neon hosts the session database. These providers may process technical connection information, such as IP addresses and request metadata, to provide their services. Their service and backup retention rules also apply.</p>
+    <h2>Cookies and account separation</h2>
+    <p>The app uses an essential session cookie to connect your browser to your stored Gmail authorization. In production it is marked Secure, HttpOnly and SameSite=Lax. Browser sessions are separate, and the app does not ask for your Gmail password.</p>
+    <h2>How long connection data is kept</h2>
+    <p>A browser session expires seven days after it is created. Expired session records are removed when the app next accesses its session database. Temporary sign-in requests expire after ten minutes. A failed or abandoned sign-in request can remain in the session record until it is replaced or the session is removed.</p>
+    <p>Clicking <strong>Disconnect</strong> removes the current browser's session record and cookie, and the app attempts to revoke the Google authorization. A request already in progress may finish. Provider backups, technical logs and information held by Google follow those providers' retention rules.</p>
+    <h2>Remove access or ask for deletion</h2>
+    <p>You can disconnect in the app, or remove Email Assistant from <a href="https://myaccount.google.com/connections">your Google Account connections</a>. If revocation fails, the app asks you to remove access in your Google Account.</p>
+    <p>For a privacy or deletion request, contact <a href="mailto:enasyazz@gmail.com">enasyazz@gmail.com</a>. Do not send passwords, API keys or access tokens. Deletion of information retained by Google or other service providers may require a separate request under their policies. Clearing cookies alone does not revoke Google's authorization.</p>
+    <h2>Security</h2>
+    <p>Google tokens are encrypted before storage. The app uses HTTPS in production and verifies the identity of remote database servers. These measures reduce risk but cannot guarantee that any online service is completely secure.</p>
+    <h2>Changes and questions</h2>
+    <p>Changes to this policy will be posted here with an updated date. Questions can be sent to <a href="mailto:enasyazz@gmail.com">enasyazz@gmail.com</a>.</p>
+  </main>
+  <footer><a href="/">Home</a><a href="/terms.html">Terms of Service</a></footer>
+</body>
+</html>
