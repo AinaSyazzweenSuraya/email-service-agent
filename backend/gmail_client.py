@@ -113,8 +113,8 @@ def fetch_message_details(service, message_id):
     }
 
 
-def fetch_recent_emails(max_results=10, query="in:inbox"):
-    creds = get_gmail_credentials()
+def fetch_recent_emails(max_results=10, query="in:inbox", credentials=None):
+    creds = credentials if credentials is not None else get_gmail_credentials()
     service = build("gmail", "v1", credentials=creds)
     stubs = list_recent_messages(service, max_results=max_results, query=query)
 
